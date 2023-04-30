@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -10,4 +10,4 @@ COPY . ./
 
 EXPOSE 3030
 
-CMD ["npm", "start"]
+ENTRYPOINT ["npm", "start"]
