@@ -13,7 +13,7 @@ const getAllTodos = async (req, res) => {
             const [rows] = await connection.query(statement, [activity_group_id]);
             const data = rows.map(row => ({
                 ...row,
-                is_active: row.is_active === 1 ? true : false
+                is_active: row.is_active === 1 ? true : (row.is_active === 0 ? false : null)
             }));
             res.status(200).json({
                 status: "Success",
@@ -26,7 +26,7 @@ const getAllTodos = async (req, res) => {
             const [rows] = await connection.query(statement);
             const data = rows.map(row => ({
                 ...row,
-                is_active: row.is_active === 1 ? true : false
+                is_active: row.is_active === 1 ? true : (row.is_active === 0 ? false : null)
             }));
             res.status(200).json({
                 status: "Success",
@@ -55,7 +55,7 @@ const getOneTodo = async (req, res) => {
         }
         const data = {
             ...rows[0],
-            is_active: rows[0].is_active === 1 ? true : false
+            is_active: rows[0].is_active === 1 ? true : (rows[0].is_active === 0 ? false : null)
         };
         res.status(200).json({
             status: "Success",
@@ -73,7 +73,7 @@ const getOneTodo = async (req, res) => {
 const createTodo = async (req, res) => {
     try {
         const { title, activity_group_id, is_active } = req.body;
-        if (title && activity_group_id && is_active != null) {
+        if (title && activity_group_id && (is_active==true || is_active==false || is_active==null)) {
             const statement = "INSERT INTO todos (activity_group_id, title, is_active) VALUES (?, ?, ?)";
             const [result] = await connection.execute(statement, [activity_group_id, title, is_active]);
             res.status(201).json({
@@ -81,25 +81,31 @@ const createTodo = async (req, res) => {
                 message: "Success",
                 data: {
                     id: result.insertId,
-                    title: title,
-                    activity_group_id: activity_group_id,
-                    is_active: is_active,
+                    title,
+                    activity_group_id,
+                    is_active,
                     priority: "very-high",
                     updatedAt: new Date().toISOString(),
                     createdAt: new Date().toISOString(),
                 },
             });
         }
-        else if (!title && !activity_group_id && is_active == null) {
+        else if (!title) {
             res.status(400).json({
                 status: "Bad Request",
                 message: "title cannot be null",
             });
         }
+        else if (!activity_group_id) {
+            res.status(400).json({
+                status: "Bad Request",
+                message: "activity_group_id cannot be null",
+            });
+        }
     } catch (err) {
         res.status(400).json({
-            status: "Not Found",
-            message: err.message,
+            status: "Bad Request",
+            message: "title cannot be null",
         });
     } 
 };
@@ -126,7 +132,7 @@ const updateTodo = async (req, res) => {
 
         const data = {
             ...updatedRows[0],
-            is_active: updatedRows[0].is_active === 1 ? true : false
+            is_active: updatedRows[0].is_active === 1 ? true : (updatedRows[0].is_active === 0 ? false : null)
         };
         res.status(200).json({
             status: "Success",

@@ -67,8 +67,8 @@ const createActivity = async (req, res) => {
         }
     } catch (err) {
         res.status(400).json({
-            status: "Not Found",
-            message: err.message,
+            status: "Bad Request",
+            message: "title cannot be null",
         });
     } 
 };
