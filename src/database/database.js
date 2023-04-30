@@ -20,7 +20,7 @@ const migration = async () => {
             CREATE TABLE IF NOT EXISTS activities (
                 activity_id INT NOT NULL AUTO_INCREMENT,
                 title VARCHAR(255) NOT NULL,
-                email VARCHAR(255) NOT NULL,
+                email VARCHAR(255),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (activity_id)
@@ -32,9 +32,9 @@ const migration = async () => {
             CREATE TABLE IF NOT EXISTS todos (
                 todo_id INT NOT NULL AUTO_INCREMENT,
                 activity_group_id INT NOT NULL,
-                title VARCHAR(255) NOT NULL,
-                priority VARCHAR(255) NOT NULL DEFAULT 'very-high',
-                is_active BOOLEAN NOT NULL,
+                title VARCHAR(255),
+                priority VARCHAR(255) DEFAULT 'very-high',
+                is_active BOOLEAN,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                 PRIMARY KEY (todo_id),
